@@ -1,25 +1,44 @@
 var http = require("http"); // import module http
 var url = require("url");
+var querystring = require("querystring");
 
 function start(route) {
 	function onRequest(request, response) {
 		var pathname = url.parse(request.url).pathname;
-		console.log("Request for " + pathname + " received.");
+		var query = querystring.parse(url.parse(request.url).query);
 		
-		route(pathname);
+		//console.log("Request for " + pathname + " received with query string:" + query);
+		//console.log("Query structure:" + querystring.parse(query));
+		//console.log("Queryobject:", querystring.parse(queryobject)["file"]);
+		
+		
+		route(pathname, query, response);
 
-		response.writeHead(200, {"Content-Type": "text/plain"});
-		response.write("Hello World");		
-		response.end();
+		
 	}
 
 	http.createServer(onRequest).listen(8888);
 
-	console.log("Server has started.");
+	console.log("Node server started succesfully.");
+	
 }
 
-exports.start = start;
+exports.start = start; // so external scripts can use the function start()
 
+/*
+	var name = 'p1.jpg'
+	var exec = require('child_process').exec;
+	
+	var child = exec('panorift.exe '+ name, { cwd: 'I:/git/immovr-demo/nodeserver/' }, function( error, stdout, stderr) 
+	   {
+		   if ( error != null ) {				
+				console.log(error);
+				console.log(stderr);
+				// error handling & exit
+		   }
+		   console.log("Panorift.exe " + filename + " executed.");
+	});	
+*/
 
 
 /*
