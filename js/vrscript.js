@@ -8,28 +8,29 @@ $( function() {
 	});
 	
 	$("#sv-button").click(function() {
-		$("#test-div").text("Open street view.");
+		//$("#test-div").text("Open street view.");
 		$.ajax({
 			url: 'http://127.0.0.1:8888/streetview',
 			//dataType: "jsonp",
 			//jsonpCallback: "_testcb",
 			//cache: false,
 			//timeout: 5000,
-			success: function(response) {
-				$("#test-div").text("Succesfully started riftserver.exe");
-				window.open("http://oculusstreetview.eu.pn/?lat=44.301996&lng=9.211584000000016&q=3&s=false&heading=0");
-			}
+			//success: function(response) {
+			//	$("#test-div").text("Succesfully started riftserver.exe");
+				
+			//}
 		});
+		window.open("http://oculusstreetview.eu.pn/?lat=44.301996&lng=9.211584000000016&q=3&s=false&heading=0");
 		
 	});
 	
 	$("#ec-button").click(function() {
-		$("#test-div").text("Open epic citadel demo.");
+		//$("#test-div").text("Open epic citadel demo.");
 		window.open("http://www.unrealengine.com/html5/");
 	});
 	
 	$("#tp-button").click(function() {
-		$("#test-div").text("Open tropical paradise.");
+		//$("#test-div").text("Open tropical paradise.");
 		window.open("http://unity3d.com/gallery/demos/live-demos#tropical-paradise");
 	});
 	
@@ -38,6 +39,7 @@ $( function() {
 		openInsideView();
 	});
 	
+		
 	function openRiftServer()
 	{
 		// open rift server
@@ -57,7 +59,7 @@ $( function() {
 			//cache: false,
 			//timeout: 5000,
 			success: function(response) {
-				$("#test-div").text("Succesfully started panorift.exe");
+				//$("#test-div").text("Succesfully started panorift.exe");
 			}
 		});
 		

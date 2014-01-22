@@ -1,5 +1,8 @@
 // var querystring = require("querystring");
 
+var isRiftServerRunning = false;
+var RiftServerChild;
+
 function route(pathname, query, response) {
   console.log("Path: " + pathname);
   console.log("Query: " + query);
@@ -13,6 +16,11 @@ function route(pathname, query, response) {
   {
 	startRiftServer(response);
   }
+  
+  response.writeHead(200, {"Content-Type": "text/plain"});
+  response.write("URL query acknowledged..");
+  response.end();
+
 }
 
 exports.route = route;
@@ -20,31 +28,52 @@ exports.route = route;
 
 function startPanoRift(filename)
 {
+	console.log("Is server running? :", isRiftServerRunning);
+	if (isRiftServerRunning == true)
+	{
+		closeRiftServer();
+		setTimeout(function(){ 
+		
+			execPanoRift(filename)}
+			
+			
+			,1000);
+	}
+	else { execPanoRift(filename);}
 	
+	
+}
+
+function execPanoRift(filename)
+{
 	var filename = filename + '.jpg';
 	console.log("Execute panorift.exe " + filename);
 	
 	var exec = require('child_process').exec;
 	
-	// var child = exec('panorift.exe ' + filename, { cwd: 'I:/git/immovr-demo/nodeserver/' }, function( error, stdout, stderr) 
-	var child = exec('panorift.exe ' + filename, { cwd: 'I:/git/immovr-demo/apps/panorift' }, function( error, stdout, stderr) 
+	var child = exec('panorift.exe ' + filename, { cwd: 'I:/git/immovr-demo/nodeserver/' }, function( error, stdout, stderr) 
+	//var child = exec('panorift.exe ' + filename, { cwd: './apps/panorift' }, function( error, stdout, stderr) 
 	   {
 		   if ( error != null ) {				
 				console.log(error);
 				console.log(stderr);
 				// error handling & exit
-		   }
-		   console.log("Panorift.exe " + filename + " executed.");
+		   }		   
 	});	
+	
+	child.on('exit', function(code) {
+		console.log("Panorift.exe " + filename + " closed.");
+	});
 }
 
 
 function startRiftServer(response)
+
 {
 	console.log("Start rift server. ");	
 	var exec = require('child_process').exec;
 	// var execFile = require('child_process').execFile;
-	var child = exec('riftserver.exe', { cwd: 'I:/git/immovr-demo/nodeserver/' }, function( error, stdout, stderr) 
+	var child = exec('riftserver.exe', { cwd: './apps/riftserver_0_3/bin' }, function( error, stdout, stderr) 
 	//var child = exec('riftserver.exe', function( error, stdout, stderr) 
 	   {
 		   if ( error != null ) {				
@@ -52,12 +81,40 @@ function startRiftServer(response)
 				console.log(stderr);
 				// error handling & exit
 		   }
-		   console.log("Rift server started.");	
+		   		   
 		   response.writeHead(200, {"Content-Type": "text/plain"});
-		   response.write("Rift server started.");		
 		   response.end();
 	});
+	
+	child.on('exit', function(code) {
+		console.log("Riftserver closed.");
+	});
+	
+	isRiftServerRunning = true;
+	RiftServerChild = child;
 }
+
+function closeRiftServer()
+{
+
+	console.log("-------------- Close RiftServer.");	
+	
+	var exec = require('child_process').exec;
+	// var execFile = require('child_process').execFile;
+	var child = exec('TASKKILL /F /IM riftserver.exe', { cwd: './apps/riftserver_0_3/bin' }, function( error, stdout, stderr) 
+	   {
+		   if ( error != null ) {				
+				console.log(error);
+				console.log(stderr);
+				// error handling & exit
+		   }	   
+		   
+	});
+	
+	isRiftServerRunning = false;
+	
+}
+
 
 
 /*
