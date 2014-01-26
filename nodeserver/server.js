@@ -23,6 +23,8 @@ function start(route) {
 	
 }
 
+// execPanoRift("p1");
+
 exports.start = start; // so external scripts can use the function start()
 
 /*

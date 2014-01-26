@@ -10,7 +10,10 @@ function route(pathname, query, response) {
   if (pathname == "/panorift")
   {
 	var filename = query["file"];	
-	startPanoRift(filename);	
+	
+	
+	//startPanoRift(filename);	
+	panoTimed();
   }	
   else if (pathname == "/streetview")
   {
@@ -24,6 +27,28 @@ function route(pathname, query, response) {
 }
 
 exports.route = route;
+
+function panoTimed()
+{
+	startPanoRift("1");
+	
+	setTimeout(function() {
+	
+		closePanoRift();
+		blackscreen();
+		setTimeout(function() {startPanoRift("2");}, 100);
+		
+		}, 4000);
+	
+	
+	setTimeout(function() {
+	
+		closePanoRift();
+		blackscreen();
+		setTimeout(function() {startPanoRift("2");}, 100);
+		
+		}, 8000);
+}
 
 
 function startPanoRift(filename)
@@ -51,8 +76,8 @@ function execPanoRift(filename)
 	
 	var exec = require('child_process').exec;
 	
-	var child = exec('panorift.exe ' + filename, { cwd: 'I:/git/immovr-demo/nodeserver/' }, function( error, stdout, stderr) 
-	//var child = exec('panorift.exe ' + filename, { cwd: './apps/panorift' }, function( error, stdout, stderr) 
+	var child = exec('panorift.exe ' + filename,  { cwd: 'C:/Users/Aron/Documents/GitHub/immovr-demo/apps/PanoRift' }, function( error, stdout, stderr)  // , { cwd: 'C:\Users\Aron\Documents\GitHub\immovr-demo\apps\PanoRift' }
+	//var child = exec('panorift.exe ' + filename, function( error, stdout, pstderr)  // , { cwd: './apps/panorift' }
 	   {
 		   if ( error != null ) {				
 				console.log(error);
@@ -66,6 +91,26 @@ function execPanoRift(filename)
 	});
 }
 
+function blackscreen()
+{
+	//var filename = filename + '.jpg';
+	console.log("Execute blackscreen");
+	
+	var exec = require('child_process').exec;
+	
+	var child = exec('blackscreen.lnk ' ,  { cwd: 'C:/Users/Aron/Documents/GitHub/immovr-demo/nodeserver/' }, function( error, stdout, stderr)  // , { cwd: 'C:\Users\Aron\Documents\GitHub\immovr-demo\apps\PanoRift' }
+	//var child = exec('panorift.exe ' + filename, function( error, stdout, pstderr)  // , { cwd: './apps/panorift' }
+	   {
+		   if ( error != null ) {				
+				console.log(error);
+				console.log(stderr);
+				// error handling & exit
+		   }		   
+	});	
+		
+}
+
+//exports.execPanoRift = execPanoRift
 
 function startRiftServer(response)
 
@@ -73,7 +118,7 @@ function startRiftServer(response)
 	console.log("Start rift server. ");	
 	var exec = require('child_process').exec;
 	// var execFile = require('child_process').execFile;
-	var child = exec('riftserver.exe', { cwd: './apps/riftserver_0_3/bin' }, function( error, stdout, stderr) 
+	var child = exec('riftserver.exe',  { cwd: 'C:/Users/Aron/Documents/GitHub/immovr-demo/nodeserver/' }, function( error, stdout, stderr) 
 	//var child = exec('riftserver.exe', function( error, stdout, stderr) 
 	   {
 		   if ( error != null ) {				
@@ -101,7 +146,7 @@ function closeRiftServer()
 	
 	var exec = require('child_process').exec;
 	// var execFile = require('child_process').execFile;
-	var child = exec('TASKKILL /F /IM riftserver.exe', { cwd: './apps/riftserver_0_3/bin' }, function( error, stdout, stderr) 
+	var child = exec('TASKKILL /F /IM riftserver.exe',  { cwd: 'C:/Users/Aron/Documents/GitHub/immovr-demo/nodeserver/' }, function( error, stdout, stderr) 
 	   {
 		   if ( error != null ) {				
 				console.log(error);
@@ -115,7 +160,25 @@ function closeRiftServer()
 	
 }
 
+function closePanoRift()
+{
 
+	console.log("-------------- Close RiftServer.");	
+	
+	var exec = require('child_process').exec;
+	// var execFile = require('child_process').execFile;
+	var child = exec('TASKKILL /F /IM panorift.exe',  { cwd: 'C:/Users/Aron/Documents/GitHub/immovr-demo/apps/PanoRift' }, function( error, stdout, stderr) 
+	   {
+		   if ( error != null ) {				
+				console.log(error);
+				console.log(stderr);
+				// error handling & exit
+		   }	   
+		   
+	});
+	
+	
+}
 
 /*
 
